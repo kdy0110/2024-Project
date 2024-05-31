@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.my.member.dao.IMemberDAO">
+
+<insert id="registMember" parameterType="com.young.my.member.vo.MemberVO">
+	
+	<selectKey keyProperty="roomNo" resultType="int" order="BEFORE">
+        select room_seq.nextval as roomNo
+        from dual
+    </selectKey>
+	
+	INSERT INTO members (mem_id, mem_pw, mem_nm, mem_kg, mem_cm, room_no) 
+	VALUES ( #{memId}, #{memPw}, #{memNm}, #{memKg}, #{memCm}, #{roomNo})
+
+</insert>
+<select id="loginMember" parameterType="MemberVO" resultType="MemberVO">
+	SELECT mem_id
+         , mem_pw
+         , mem_nm
+         , mem_kg
+         , mem_cm
+         , room_no
+	FROM members 
+	WHERE use_yn = 'Y'
+	AND mem_id = #{memId}
+</select>
+<update id="profileUpload" parameterType="MemberVO">
+	UPDATE members
+	SET profile_img = #{profileImg}
+	WHERE mem_id = #{memId}
+		
+</update>
+<update id="updateMember" parameterType="MemberVO" >
+   UPDATE members
+   SET mem_nm = #{memNm}
+   WHERE mem_id = #{memId}
+</update>
+	
+<insert id="inbodyMember" parameterType="InbodyVO">
+	INSERT INTO exercise (	  mem_id
+							, exer_kg
+							, exer_fkg
+							, exer_bmi
+							, exer_mu)
+	             VALUES(#{memId}
+	             		,#{exerKg}
+	             		,#{exerFkg}
+	             		,#{exerBmi}
+	             		,#{exerMu})
+</insert>
+
+
+
+</mapper>

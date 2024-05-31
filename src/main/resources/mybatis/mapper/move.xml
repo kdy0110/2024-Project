@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.my.member.dao.IMemberDAO">
+
+<select id="moveMember" parameterType="com.young.my.member.vo.MoveVO" resultType="com.young.my.member.vo.MoveVO">
+	SELECT cal_per
+	FROM calories
+	WHERE food like #{food}
+	
+</select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.my.board.dao.IBoardDAO">
+
+	<select id="getBoardList" resultType="com.young.my.board.vo.BoardVO" parameterType="SearchVO">
+	
+		SELECT  a.board_no
+		      , a.board_title
+		      , a.mem_id
+		      , b.mem_nm
+		      , a.board_date
+		FROM boards a, members b
+		WHERE a.mem_id = b.mem_id
+		AND a.del_yn = 'N'
+		<!--  stDt가 내용이 있을때만 and절 사용  -->	
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(stDt)" >
+	  	AND TO_DATE(TO_CHAR(a.board_date,'YYYY-MM-DD')) BETWEEN to_date(#{stDt}) AND to_date(#{endDt})
+		</if>
+		ORDER BY 1
+		
+	</select>
+	<insert id="writeBoard" parameterType="BoardVO">
+	INSERT INTO boards(
+	                     board_no
+	                   , board_title
+	                   , mem_id
+	                   , board_content
+	                   )
+				VALUES (
+				          (SELECT NVL(MAX(board_no),0) + 1
+				           FROM boards)
+				         , #{boardTitle}
+				         , #{memId}
+				         , #{boardContent}
+				         )
+
+	</insert>
+	<select id="getBoard" resultType="BoardVO" parameterType="int">
+	SELECT  a.board_no
+	      , a.board_title
+	      , a.board_content
+	      , a.mem_id
+	      , b.mem_nm
+	      , a.board_date
+	FROM boards a, members b
+	WHERE a.mem_id = b.mem_id
+	AND a.board_no = #{boardNo}
+	AND a.del_yn = 'N'
+</select>
+<update id="updateBoard" parameterType="BoardVO">
+	UPDATE boards
+	SET board_title = #{boardTitle}
+	   ,board_content = #{boardContent}
+	   ,board_date = SYSDATE
+	WHERE board_no = #{boardNo}
+</update>
+<update id="deleteBoard" parameterType="int">
+	DELETE boards
+    WHERE board_no = #{boardNo}
+</update>
+
+
+
+</mapper>
